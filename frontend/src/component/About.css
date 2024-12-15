@@ -1,0 +1,43 @@
+.about {
+  min-height: 100vh;
+  background: #f5f5f7;
+  padding: 100px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.about-container {
+  max-width: 800px;
+  text-align: center;
+}
+
+.about h1 {
+  font-size: 2.5em;
+  color: #0071e3;
+  margin-bottom: 20px;
+}
+
+.about p {
+  font-size: 1.2em;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.about h2 {
+  font-size: 1.8em;
+  color: #0071e3;
+  margin-top: 40px;
+}
+
+.about h3 {
+  font-size: 1.5em;
+  color: #0071e3;
+  margin-top: 30px;
+}
+
+.about .dedication {
+  font-style: italic;
+  color: #555;
+}

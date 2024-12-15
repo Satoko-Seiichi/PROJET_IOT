@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surveillance Temp</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'table' %}" >Home</a></li>
+                <li><a href="{% url 'myChartTemp' %}">Temperature Graph</a></li>
+                <li><a href="{% url 'myChartHum' %}">Humidity Graph</a></li>
+            </ul>
+            <select name="liste">
+                <optgroup label="MENU">
+                    <option value="Home"><a href="{% url 'table' %}" >Home</a></option>
+                    <option value="Temp"><a href="{% url 'myChartTemp' %}">Temperature Graph</a></option>
+                    <option value="Humid"><a href="{% url 'myChartHum' %}">Humidity Graph</a></option>
+                </optgroup>
+            </select>
+            <form method="post" action="{% url 'table' %}" class="dropdown-form">
+                {% csrf_token %}
+                <select id="select" name="select_field" class="dropdown">
+                    <option value="signup" selected>S'inscrire</option>
+                    <option value="logout">Se déconnecter</option>
+                </select>
+                <button type="submit" class="submit-btn">Submit</button>
+            </form>
+        </nav>
+    </header>
+
+    <main>
+        <section class="title-section">
+            <h1>SURVEILLANCE TEMP</h1>
+            <h2>SENSOR DHT 11</h2>
+        </section>
+        <section class="content-section">
+            <h3>Table Temperature Humidity Post</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Capteur</th>
+                        <th>Temperature</th>
+                        <th>Humidité</th>
+                        <th>Temps</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="{% url 'myChartTemp' %}" >DHT 11</a></td>
+                        <td>{{ valeurs.temp }} </td>
+                        <td>{{ valeurs.hum }}</td>
+                        <td>{{ valeurs.date }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <button class="download-btn"><a href="http://192.168.239.176:8000">Télécharger CSV</a></button>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<head>
+
+    {% load static %}<link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+
+<div class="navbar">
+    <link rel="stylesheet" href="navBar.css">
+  <nav>
+
+      <div class="logo-container">
+          <h1 class="logo">SURVEILLANCE TEMP</h1>
+          <h3 class="subtitle">SENSOR DHT 11</h3>
+      </div>
+
+      <ul class="nav-links">
+          <table>
+              <tr>
+                <th><a href="{% url 'table' %}" class="nav-btn">Table</a></th>
+                <th><a href="{% url 'myChartTemp' %}" class="nav-btn">Temperature</a></th>
+                <th><a href="{% url 'myChartHum' %}" class="nav-btn">Humidity</a></th>
+                <th><a href="{% url 'json' %}" class="nav-btn">Post</a></th>
+              </tr>
+          </table>
+      </ul>
+
+
+      <form method="post" action="{% url 'table' %}" class="dropdown-form">
+          {% csrf_token %}
+          <select id="select" name="select_field" class="dropdown">
+              <option value="signup" selected>S'inscrire</option>
+              <option value="logout">Se déconnecter</option>
+          </select>
+          <button type="submit" class="submit-btn">Submit</button>
+      </form>
+  </nav>
+</div>
+<br><br><br><br>
