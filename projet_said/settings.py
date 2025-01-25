@@ -151,3 +151,11 @@ EMAIL_HOST_PASSWORD = 'rfqw wyfl csry nwqn'
 LOGIN_URL = '/login/'  # Path to your login page
 LOGIN_REDIRECT_URL = '/user-dashboard/'  # Path to redirect after successful login
 LOGOUT_REDIRECT_URL = '/'  # Path to redirect after logout
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+# Twilio Credentials
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')

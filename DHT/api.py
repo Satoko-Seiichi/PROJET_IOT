@@ -25,8 +25,11 @@ def Dlist(request):
             if derniere_temperature > 25:
 
                     # Alert WhatsApp
-                    account_sid = 'AC7dfbea69da07e92775b7f0b3470518b4'
-                    auth_token = 'c17cc797b3d1572fba2cb9b566f6c939'
+                    from django.conf import settings
+
+                    account_sid = settings.TWILIO_ACCOUNT_SID
+                    auth_token = settings.TWILIO_AUTH_TOKEN
+
                     client = Client(account_sid, auth_token)
                     message_whatsapp = client.messages.create(
                         from_='whatsapp:+14155238886',
