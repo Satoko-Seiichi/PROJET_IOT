@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% block i %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident</title>
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .alert-box {
+            background-color: #ffefef;
+            border: 3px solid #ff4d4d;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .alert-box h2 {
+            color: #c0392b;
+            margin-bottom: 15px;
+            font-size: 26px;
+        }
+
+        .alert-user {
+            color: #e74c3c;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .safe-box {
+            background-color: #e8f5e9;
+            border: 2px solid #66bb6a;
+            color: #388e3c;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .safe-box h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .comment-box {
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .comment-box label {
+            font-size: 18px;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .comment-box textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 2px solid #e74c3c;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .comment-box textarea:focus {
+            outline: none;
+            border-color: #c0392b;
+            box-shadow: 0 0 8px rgba(192, 57, 43, 0.5);
+        }
+
+        .comment-box button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 18px;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .comment-box button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .comment-box button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            {% if latest_data %}
+                {% if latest_data.temp > 25 %}
+                    <div class="alert-box">
+                        <h2>Alert!</h2>
+                        <p><strong>Temperature:</strong> {{ latest_data.temp }}°C</p>
+                        <p><strong>Humidity:</strong> {{ latest_data.hum }}%</p>
+                        <p><strong>Date:</strong> {{ latest_data.dt }}</p>
+                        <p class="alert-user">Alert sent to: {{ request.user.username }}</p>
+                    </div>
+                {% else %}
+                    <div class="safe-box">
+                        <h2>Everything is Clear!</h2>
+                        <p>The current temperature is safe at {{ latest_data.temp }}°C.</p>
+                        <p><strong>Humidity:</strong> {{ latest_data.hum }}%</p>
+                        <p><strong>Date:</strong> {{ latest_data.dt }}</p>
+                    </div>
+                {% endif %}
+                <div class="comment-box">
+                    <label for="comment">Add Your Comment:</label>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <textarea id="comment" name="comment" placeholder="Write your thoughts here..." required></textarea>
+                        <br>
+                        <button type="submit">Submit Comment</button>
+                    </form>
+                </div>
+            {% else %}
+                <p>No data available to display.</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
+{% endblock i %}

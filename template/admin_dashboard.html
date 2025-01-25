@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administration</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #000000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .navbar .logo {
+            font-size: 1.5em;
+            margin: 0;
+            color: #fff;
+        }
+
+        .navbar .subtitle {
+            font-size: 0.9em;
+            margin: 0;
+            color: #bbb;
+        }
+
+        .nav-links {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .nav-links table {
+            width: 100%;
+        }
+
+        .nav-links th {
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1em;
+            display: block;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .logout-container {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .logout-btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        main {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2b6777;
+        }
+
+        .admin-table-container {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .admin-table, .admin-table th, .admin-table td {
+            border: 1px solid #d9edf7;
+        }
+
+        .admin-table th {
+            background-color: #22a4da;
+            color: #ffffff;
+            text-align: center;
+            padding: 14px;
+        }
+
+        .admin-table td {
+            padding: 12px;
+            text-align: center;
+            color: #333;
+        }
+
+        .admin-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .admin-table tr:hover {
+            background-color: #e0f7fa;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 15px;
+            }
+
+            .admin-table th, .admin-table td {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <h1 class="logo">SURVEILLANCE TEMP</h1>
+            <h3 class="subtitle">SENSOR DHT 11</h3>
+        </div>
+
+        <ul class="nav-links">
+            <table>
+                <tr>
+                    <th><a href="{% url 'admin_dashboard' %}" class="nav-btn">Home</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'Charts' %}" class="nav-btn">Graphs</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'incidents' %}" class="nav-btn">Incidents</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'administration' %}" class="nav-btn">Administration</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'manuel_post' %}" class="nav-btn">Post</a></th>
+                </tr>
+            </table>
+        </ul>
+
+        <div class="logout-container">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <div class="admin-container">
+            <h2>Administration</h2>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Temperature</th>
+                            <th>Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in comments %}
+                            <tr>
+                                <td>{{ comment.user.username }}</td>
+                                <td>{{ comment.temperature }}</td>
+                                <td>{{ comment.timestamp }}</td>
+                                <td>{{ comment.comment }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="empty-message">No comments found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

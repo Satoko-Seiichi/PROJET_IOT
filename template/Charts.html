@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html' %}
+{% block i %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphiques de Température et d'Humidité</title> <!-- Translated title -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+    <!-- Inclure Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #000000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .navbar .logo {
+            font-size: 1.5em;
+            margin: 0;
+            color: #fff;
+        }
+
+        .navbar .subtitle {
+            font-size: 0.9em;
+            margin: 0;
+            color: #bbb;
+        }
+
+        .nav-links {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .nav-links table {
+            width: 100%;
+        }
+
+        .nav-links th {
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1em;
+            display: block;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .dropdown-form {
+            margin-top: auto;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .dropdown {
+            padding: 10px;
+            width: 80%;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        main {
+            margin-left: 250px; /* Laisse de l'espace pour la navbar */
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative; /* This ensures that the button can be positioned within the main content */
+        }
+
+        .form-container {
+            margin-bottom: 30px;
+        }
+
+        .form-container select {
+            padding: 10px;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .chart-wrapper {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 30px;
+            flex-wrap: wrap;  /* Allow wrapping for small screens */
+        }
+
+        .chart-container {
+            flex: 1;
+            height: 500px;  /* Increased height for the charts */
+            margin: 0 20px;
+            max-width: 600px;
+        }
+
+        .csv-button {
+            position: absolute;
+            top: 520px;  /* Position the button near the top */
+            right: 450px;  /* Align the button to the right */
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            z-index: 2000; /* Ensure it's in front of the content */
+        }
+
+        .csv-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Content with Graphs -->
+    <main>
+        <!-- CSV Download Button at the Top Right -->
+        <a href="{% url 'download_csv' %}">
+            <button class="csv-button">Download CSV</button>
+        </a>
+
+        <h1>Graphiques de Température et d'Humidité</h1> <!-- Translated title -->
+
+        <!-- Formulaire pour choisir la période -->
+        <div class="form-container">
+            <label for="time-period">Choose time period:</label>
+            <select id="time-period">
+                <option value="24h" selected>Last 24 Hours</option> <!-- Default to 24h -->
+                <option value="1w">Last 1 Week</option>
+                <option value="1m">Last 1 Month</option>
+            </select>
+            <button onclick="updateCharts()">Update Charts</button>
+        </div>
+
+        <!-- Conteneur pour les graphiques -->
+        <div class="chart-wrapper">
+            <div class="chart-container">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="humidityChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var temperatureChart, humidityChart;
+
+        function createChart(ctx, chartData) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: { beginAtZero: true },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Créer des graphiques vides initialement
+        window.onload = function() {
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            const humCtx = document.getElementById('humidityChart').getContext('2d');
+
+            const defaultData = {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Temperature (°C)',
+                        data: [],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            temperatureChart = createChart(tempCtx, defaultData);
+
+            const humidityData = {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Humidity (%)',
+                        data: [],
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            humidityChart = createChart(humCtx, humidityData);
+
+            // Automatically trigger chart update for the past 24 hours on page load
+            updateCharts();
+        };
+
+        function updateCharts() {
+            const timePeriod = document.getElementById('time-period').value;
+            let apiUrl = '';
+
+            switch (timePeriod) {
+                case '24h':
+                    apiUrl = "{% url 'chart_data_jour' %}";
+                    break;
+                case '1w':
+                    apiUrl = "{% url 'chart_data_semaine' %}";
+                    break;
+                case '1m':
+                    apiUrl = "{% url 'chart_data_mois' %}";
+                    break;
+            }
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    temperatureChart.data.labels = data.temps;  // Temps (par exemple : dates ou heures)
+                    temperatureChart.data.datasets[0].data = data.temperature;  // Température
+                    temperatureChart.update();
+
+                    humidityChart.data.labels = data.temps;  // Temps (par exemple : dates ou heures)
+                    humidityChart.data.datasets[0].data = data.humidity;  // Humidité
+                    humidityChart.update();
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+    </script>
+
+</body>
+</html>
+{% endblock i %}

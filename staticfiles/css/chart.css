@@ -1,0 +1,31 @@
+.navb {
+    position: relative;
+    width: 100%; /* Ensure it aligns with the graph */
+    height: auto; /* Adjust height based on content */
+    background-color: #ccc; /* Optional background for better visibility */
+    display: flex;
+    flex-direction: row; /* Align buttons in a row */
+    justify-content: space-around; /* Evenly space buttons */
+    align-items: center;
+    margin-top: 10px; /* Add spacing between graph and buttons */
+}
+
+.navb button {
+    flex: 1; /* Distribute buttons evenly */
+    text-decoration: none;
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #007bff; /* Ensure buttons have a consistent background */
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navb button:hover {
+    background-color: #0056b3; /* Hover effect for better UX */
+    color: #fff;
+}

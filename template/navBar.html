@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surveillance Temp</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background-color: #000000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .navbar .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .navbar .logo {
+            font-size: 1.5em;
+            margin: 0;
+            color: #fff;
+        }
+
+        .navbar .subtitle {
+            font-size: 0.9em;
+            margin: 0;
+            color: #bbb;
+        }
+
+        .nav-links {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+        }
+
+        .nav-links table {
+            width: 100%;
+        }
+
+        .nav-links th {
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #fff;
+            font-size: 1em;
+            display: block;
+            padding: 10px 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+
+        .logout-container {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+        }
+
+        .logout-btn {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 100px;
+}
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        main {
+            margin-left: 250px; /* Laissez de l'espace pour la navbar */
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo-container">
+            <h1 class="logo">SURVEILLANCE TEMP</h1>
+            <h3 class="subtitle">SENSOR DHT 11</h3>
+        </div>
+
+        <ul class="nav-links">
+            <table>
+                <tr>
+                    <th><a href="{% url 'dashboard' %}" class="nav-btn">Home</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'Charts' %}" class="nav-btn">graphs</a></th>
+                </tr>
+                 <tr>
+                    <th><a href="{% url 'incidents' %}" class="nav-btn">incidents</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'administration' %}" class="nav-btn">administration</a></th>
+                </tr>
+                <tr>
+                    <th><a href="{% url 'manuel_post' %}" class="nav-btn">Post</a></th>
+                </tr>
+            </table>
+        </ul>
+
+        <!-- Logout Button -->
+        <div class="logout-container">
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
